@@ -1,6 +1,6 @@
-package com.econet.econetsigner.controllers;
+package com.sixthradix.econetsigner.controllers;
 
-import com.econet.econetsigner.dtos.Bill;
+import com.sixthradix.econetsigner.dtos.Bill;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

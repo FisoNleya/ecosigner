@@ -1,6 +1,6 @@
-package com.econet.econetsigner.services;
+package com.sixthradix.econetsigner.services;
 
-import com.econet.econetsigner.dtos.Response;
+import com.sixthradix.econetsigner.dtos.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.econet.econetsigner;
+package com.sixthradix.econetsigner;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

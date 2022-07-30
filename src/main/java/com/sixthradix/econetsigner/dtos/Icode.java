@@ -1,5 +1,5 @@
 
-package com.econet.econetsigner.dtos;
+package com.sixthradix.econetsigner.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

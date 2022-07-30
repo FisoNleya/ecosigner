@@ -1,5 +1,4 @@
-
-package com.econet.econetsigner.dtos;
+package com.sixthradix.econetsigner.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -13,24 +12,24 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Item implements Serializable {
+public class ItemsXml implements Serializable {
 
-    private static final long serialVersionUID = 23453L;
+    private static final long serialVersionUID = 431252341L;
 
-    @JsonProperty("AMT")
-    private String amt;
     @JsonProperty("HH")
     private String hh;
     @JsonProperty("ITEMCODE")
-    private String itemcode;
+    private String itemCode;
     @JsonProperty("ITEMNAME1")
-    private String itemname1;
+    private String itemName1;
     @JsonProperty("ITEMNAME2")
-    private String itemname2;
-    @JsonProperty("PRICE")
-    private String price;
+    private String itemName2;
     @JsonProperty("QTY")
     private String qty;
+    @JsonProperty("PRICE")
+    private String price;
+    @JsonProperty("AMT")
+    private String amt;
     @JsonProperty("TAX")
     private String tax;
     @JsonProperty("TAXR")
