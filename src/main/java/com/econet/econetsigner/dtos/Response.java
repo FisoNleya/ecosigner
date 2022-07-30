@@ -20,7 +20,7 @@ public class Response implements Serializable {
     @JsonProperty("Code")
     private String code;
     @JsonProperty("Data")
-    private List<Datum> data = null;
+    private List<Datum> data;
     @JsonProperty("Message")
     private String message;
 

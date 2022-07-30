@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Stock implements Serializable {
+public class Bill implements Serializable {
 
     private static final long serialVersionUID = 34345L;
 

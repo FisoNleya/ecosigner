@@ -36,7 +36,7 @@ public class Invoice implements Serializable {
     @JsonProperty("IND")
     private String ind;
     @JsonProperty("INVOICES")
-    private List<Invoice__1> invoices = null;
+    private List<Invoice__1> invoices;
     @JsonProperty("MACNUM")
     private String macnum;
 

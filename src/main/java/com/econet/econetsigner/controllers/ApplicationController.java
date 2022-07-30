@@ -1,11 +1,13 @@
 package com.econet.econetsigner.controllers;
 
-import com.econet.econetsigner.dtos.Stock;
+import com.econet.econetsigner.dtos.Bill;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -15,10 +17,9 @@ import org.springframework.web.bind.annotation.*;
 public class ApplicationController {
 
     @PostMapping("/sign")
-    public ResponseEntity<Stock> sign(@RequestParam String callBackUrl, @RequestBody Stock stockRequest){
-
+    public ResponseEntity<Bill> sign(@RequestParam String callBackUrl, @Valid @RequestBody Bill billRequest){
         //TODO call logic
-       return new ResponseEntity<>(stockRequest, HttpStatus.OK);
+       return new ResponseEntity<>(billRequest, HttpStatus.OK);
     }
 
 
