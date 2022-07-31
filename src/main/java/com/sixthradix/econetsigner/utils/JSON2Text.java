@@ -4,21 +4,36 @@ import org.json.JSONObject;
 import org.stringtemplate.v4.ST;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class JSON2Text {
 
+    public static String BPN = "CustomerBPN";
+    public static String VAT = "CustomerVatNumber";
+    public static String INVOICE_NUMBER = "InvoiceNumber";
+    public static String INVOICE_AMOUNT = "InvoiceAmount";
+    public static String TAX_AMOUNT = "InvoiceTaxAmount";
+    public static String CURRENCY = "Currency";
+    public static String SIGNATURE = "signature";
+    public static String CALLBACK_URL = "callback_url";
+
     public List<String> convert(JSONObject jsonObject){
         List<String> data = new ArrayList<>();
 
-        String BPN = jsonObject.getString("CustomerBPN");
-        String VATNumber = jsonObject.getString("CustomerVatNumber");
-        String invoiceNumber = jsonObject.getString("InvoiceNumber");
-        String invoiceAmount = jsonObject.getString("InvoiceAmount");
-        String invoiceTaxAmount = jsonObject.getString("InvoiceTaxAmount");
+        String currency = jsonObject.getString(CURRENCY);
+        String bpn = jsonObject.getString(BPN);
+        String VATNumber = jsonObject.getString(VAT);
+        String invoiceNumber = jsonObject.getString(INVOICE_NUMBER);
+        String invoiceAmount = jsonObject.getString(INVOICE_AMOUNT);
+        String invoiceTaxAmount = jsonObject.getString(TAX_AMOUNT);
+        String callback_url = jsonObject.getString(CALLBACK_URL);
 
-        ST bpn = new ST("CustomerBPN\t<BPN>");
-        bpn.add("BPN", BPN);
+        ST currency_ = new ST("Currency\t<currency>");
+        currency_.add("currency", currency);
+
+        ST bpn_ = new ST("CustomerBPN\t<BPN>");
+        bpn_.add("BPN", bpn);
 
         ST vat = new ST("CustomerVatNumber\t<VATNumber>");
         vat.add("VATNumber", VATNumber);
@@ -32,11 +47,16 @@ public class JSON2Text {
         ST taxAMT = new ST("InvoiceTaxAmount\t<invoiceTaxAmount>");
         taxAMT.add("invoiceTaxAmount", invoiceTaxAmount);
 
-        data.add(bpn.render());
+        ST callback = new ST("CallbackUrl\t<callback_url>");
+        callback.add("callback_url", callback_url);
+
+        data.add(currency_.render());
+        data.add(bpn_.render());
         data.add(vat.render());
         data.add(invNum.render());
         data.add(amt.render());
         data.add(taxAMT.render());
+        data.add(callback.render());
 
         // invoice items
         List<String> items = new ArrayList<>();
@@ -62,7 +82,39 @@ public class JSON2Text {
         return data;
     }
 
-    public void toJSON(String jsonStr){
+    public JSONObject toJSON(List<String> invoiceData){
+        String signature = "xxxxxxxxxx";
 
+        String line0 = invoiceData.get(0).trim();
+        String currency = line0.substring(line0.indexOf("\t") + 1).trim();
+
+        String line1 = invoiceData.get(1).trim();
+        String bpn = line1.substring(line1.indexOf("\t") + 1).trim();
+
+        String line2 = invoiceData.get(2).trim();
+        String VATNumber = line2.substring(line2.indexOf("\t") + 1).trim();
+
+        String line3 = invoiceData.get(3).trim();
+        String invoiceNumber = line3.substring(line3.indexOf("\t") + 1).trim();
+
+        String line4 = invoiceData.get(4).trim();
+        String invoiceAmount = line4.substring(line4.indexOf("\t") + 1).trim();
+
+        String line5 = invoiceData.get(5).trim();
+        String invoiceTaxAmount = line5.substring(line5.indexOf("\t") + 1).trim();
+
+        String line6 = invoiceData.get(6).trim();
+        String callbackUrl = line6.substring(line6.indexOf("\t") + 1).trim();
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(SIGNATURE, signature);
+        jsonObject.put(CURRENCY, currency);
+        jsonObject.put(BPN, bpn);
+        jsonObject.put(VAT, VATNumber);
+        jsonObject.put(INVOICE_NUMBER, invoiceNumber);
+        jsonObject.put(INVOICE_AMOUNT, invoiceAmount);
+        jsonObject.put(TAX_AMOUNT, invoiceTaxAmount);
+        jsonObject.put(CALLBACK_URL, callbackUrl);
+        return jsonObject;
     }
 }

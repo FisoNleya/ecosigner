@@ -13,15 +13,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Response implements Serializable {
+public class SignedInvoiceResponse implements Serializable {
 
     private static final long serialVersionUID = 344352L;
 
-    @JsonProperty("Code")
-    private String code;
-    @JsonProperty("Data")
-    private List<Datum> data;
-    @JsonProperty("Message")
-    private String message;
+    @JsonProperty("invoice_number")
+    private String invoiceNumber;
+    @JsonProperty("bpn")
+    private String BPN;
+    @JsonProperty("currency")
+    private String currency;
+    @JsonProperty("invoice_amt")
+    private String invoiceAMT;
+    @JsonProperty("signature")
+    private String signature;
 
 }

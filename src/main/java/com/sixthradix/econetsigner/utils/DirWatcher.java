@@ -1,7 +1,10 @@
 package com.sixthradix.econetsigner.utils;
 
+import com.sixthradix.econetsigner.dtos.SignedInvoiceResponse;
+import com.sixthradix.econetsigner.services.ApplicationService;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +15,14 @@ import java.util.List;
 public class DirWatcher implements FileAlterationListener {
     Logger logger = LoggerFactory.getLogger(DirWatcher.class);
     private final FileManager fileManager = new FileManager();
+
+    private final ApplicationService applicationService;
+    private final JSON2Text converter = new JSON2Text();
+
+
+    public DirWatcher(ApplicationService applicationService) {
+        this.applicationService = applicationService;
+    }
 
     @Override
     public void onStart(FileAlterationObserver fileAlterationObserver) {
@@ -40,6 +51,18 @@ public class DirWatcher implements FileAlterationListener {
             for(String x: signedInvoiceData){
                 System.out.println(x);
             }
+            JSONObject jsonObject = converter.toJSON(signedInvoiceData);
+            SignedInvoiceResponse response = new SignedInvoiceResponse();
+            response.setCurrency(JSON2Text.CURRENCY);
+            response.setInvoiceNumber(JSON2Text.INVOICE_NUMBER);
+            response.setBPN(JSON2Text.BPN);
+            response.setInvoiceAMT(JSON2Text.INVOICE_AMOUNT);
+            response.setSignature(JSON2Text.SIGNATURE);
+
+            String callbackUrl = jsonObject.getString(JSON2Text.CALLBACK_URL);
+
+            //send response to callback url
+//            applicationService.sendResponse(callbackUrl, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

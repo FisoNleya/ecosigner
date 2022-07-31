@@ -1,5 +1,6 @@
 package com.sixthradix.econetsigner;
 
+import com.sixthradix.econetsigner.services.ApplicationService;
 import com.sixthradix.econetsigner.utils.DirWatcher;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
@@ -21,6 +22,12 @@ public class EconetSignerApplication {
 	@Value("${app.sourceFolder}")
 	private String sourceFolder;
 
+	private final ApplicationService applicationService;
+
+	public EconetSignerApplication(ApplicationService applicationService) {
+		this.applicationService = applicationService;
+	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(EconetSignerApplication.class, args);
 	}
@@ -34,7 +41,7 @@ public class EconetSignerApplication {
 			FileFilter fileFilter = file1 -> file1.getName().endsWith(".txt"); //process .txt files only
 			FileAlterationObserver observer = new FileAlterationObserver(file, fileFilter);
 
-			observer.addListener(new DirWatcher());
+			observer.addListener(new DirWatcher(applicationService));
 
 			long interval = TimeUnit.SECONDS.toMillis(3);
 			FileAlterationMonitor monitor = new FileAlterationMonitor(interval);
