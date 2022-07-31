@@ -1,5 +1,5 @@
 
-package com.econet.econetsigner.dtos;
+package com.sixthradix.econetsigner.dtos;
 
 import java.io.Serializable;
 import java.util.List;

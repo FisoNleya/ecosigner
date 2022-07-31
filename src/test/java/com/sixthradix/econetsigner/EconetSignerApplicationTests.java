@@ -1,4 +1,4 @@
-package com.econet.econetsigner;
+package com.sixthradix.econetsigner;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
