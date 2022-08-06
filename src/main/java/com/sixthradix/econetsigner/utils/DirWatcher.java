@@ -48,9 +48,7 @@ public class DirWatcher implements FileAlterationListener {
         logger.info("File created: ".concat(file.getAbsolutePath()));
         try {
             List<String> signedInvoiceData = fileManager.readTextFile(file, false);
-            for(String x: signedInvoiceData){
-                System.out.println(x);
-            }
+
             JSONObject jsonObject = converter.toJSON(signedInvoiceData);
             SignedInvoiceResponse response = new SignedInvoiceResponse();
             response.setCurrency(JSON2Text.CURRENCY);
@@ -61,8 +59,8 @@ public class DirWatcher implements FileAlterationListener {
 
             String callbackUrl = jsonObject.getString(JSON2Text.CALLBACK_URL);
 
-            //send response to callback url
-//            applicationService.sendResponse(callbackUrl, response);
+//            send response to callback url
+            applicationService.sendResponse(callbackUrl, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

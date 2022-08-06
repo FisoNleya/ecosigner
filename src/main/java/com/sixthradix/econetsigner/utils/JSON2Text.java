@@ -66,7 +66,7 @@ public class JSON2Text {
             callback.add("callback_url", callback_url);
             data.add(callback.render());
         } catch (JSONException e) {
-           logger.info("Synchronous call");
+           logger.info("No callback url supplied");
         }
 
         // invoice items
@@ -94,7 +94,6 @@ public class JSON2Text {
     }
 
     public JSONObject toJSON(List<String> invoiceData){
-        String signature = "xxxxxxxxxx";
 
         String line0 = invoiceData.get(0).trim();
         String currency = line0.substring(line0.indexOf("\t") + 1).trim();
@@ -116,6 +115,9 @@ public class JSON2Text {
 
         String line6 = invoiceData.get(6).trim();
         String callbackUrl = line6.substring(line6.indexOf("\t") + 1).trim();
+
+        String lastLine = invoiceData.get(invoiceData.size()-1).trim();
+        String signature = lastLine.trim();
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(SIGNATURE, signature);
