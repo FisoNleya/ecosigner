@@ -1,6 +1,10 @@
 package com.sixthradix.econetsigner.utils;
 
+import com.sixthradix.econetsigner.controllers.ApplicationController;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.stringtemplate.v4.ST;
 
 import java.util.ArrayList;
@@ -17,6 +21,7 @@ public class JSON2Text {
     public static String CURRENCY = "Currency";
     public static String SIGNATURE = "signature";
     public static String CALLBACK_URL = "callback_url";
+    Logger logger = LoggerFactory.getLogger(JSON2Text.class);
 
     public List<String> convert(JSONObject jsonObject){
         List<String> data = new ArrayList<>();
@@ -27,7 +32,6 @@ public class JSON2Text {
         String invoiceNumber = jsonObject.getString(INVOICE_NUMBER);
         String invoiceAmount = jsonObject.getString(INVOICE_AMOUNT);
         String invoiceTaxAmount = jsonObject.getString(TAX_AMOUNT);
-        String callback_url = jsonObject.getString(CALLBACK_URL);
 
         ST currency_ = new ST("Currency\t<currency>");
         currency_.add("currency", currency);
@@ -47,8 +51,7 @@ public class JSON2Text {
         ST taxAMT = new ST("InvoiceTaxAmount\t<invoiceTaxAmount>");
         taxAMT.add("invoiceTaxAmount", invoiceTaxAmount);
 
-        ST callback = new ST("CallbackUrl\t<callback_url>");
-        callback.add("callback_url", callback_url);
+
 
         data.add(currency_.render());
         data.add(bpn_.render());
@@ -56,7 +59,15 @@ public class JSON2Text {
         data.add(invNum.render());
         data.add(amt.render());
         data.add(taxAMT.render());
-        data.add(callback.render());
+
+        try {
+            String callback_url = jsonObject.getString(CALLBACK_URL);
+            ST callback = new ST("CallbackUrl\t<callback_url>");
+            callback.add("callback_url", callback_url);
+            data.add(callback.render());
+        } catch (JSONException e) {
+           logger.info("Synchronous call");
+        }
 
         // invoice items
         List<String> items = new ArrayList<>();
