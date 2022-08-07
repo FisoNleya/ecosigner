@@ -130,4 +130,33 @@ public class JSON2Text {
         jsonObject.put(CALLBACK_URL, callbackUrl);
         return jsonObject;
     }
+    public JSONObject toJSON2(List<String> invoiceData){
+
+        JSONObject jsonObject = new JSONObject();
+
+        String lastLine = invoiceData.get(invoiceData.size()-1).trim();
+        String signature = lastLine.trim();
+        jsonObject.put(SIGNATURE, signature);
+
+        invoiceData.parallelStream().forEach(line ->{
+            String trimLine = line.substring(line.indexOf("\t") + 1).trim();
+            if (line.trim().contains(CURRENCY))
+                jsonObject.put(CURRENCY, trimLine);
+            if (line.trim().contains(BPN))
+                jsonObject.put(BPN, trimLine);
+            if (line.trim().contains(VAT))
+                jsonObject.put(VAT, trimLine);
+            if (line.trim().contains(INVOICE_NUMBER))
+                jsonObject.put(INVOICE_NUMBER, trimLine);
+            if (line.trim().contains(INVOICE_AMOUNT))
+                jsonObject.put(INVOICE_AMOUNT, trimLine);
+            if (line.trim().contains(TAX_AMOUNT))
+                jsonObject.put(TAX_AMOUNT, trimLine);
+
+        });
+
+        return jsonObject;
+    }
+
+
 }

@@ -110,13 +110,16 @@ public class ApplicationController {
                     //Read file to json and respond
                     List<String> signedInvoiceData = fileManager.readTextFile(invoiceFile, false);
 
-                    JSONObject jsonObject = converter.toJSON(signedInvoiceData);
+                    JSONObject jsonObject = converter.toJSON2(signedInvoiceData);
                     SignedInvoiceResponse response = new SignedInvoiceResponse();
                     response.setCurrency(jsonObject.getString(JSON2Text.CURRENCY));
                     response.setInvoiceNumber(jsonObject.getString(JSON2Text.INVOICE_NUMBER));
                     response.setBPN(jsonObject.getString(JSON2Text.BPN));
                     response.setInvoiceAMT(jsonObject.getString(JSON2Text.INVOICE_AMOUNT));
                     response.setSignature(jsonObject.getString(JSON2Text.SIGNATURE));
+
+                    if(!response.getSignature().contains(response.getInvoiceAMT()))
+                        return new ResponseEntity<>("Invalid signature, check the ESD", HttpStatus.OK);
 
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
