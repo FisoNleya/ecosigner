@@ -1,6 +1,5 @@
 package com.sixthradix.econetsigner.utils;
 
-import com.sixthradix.econetsigner.controllers.ApplicationController;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -8,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.stringtemplate.v4.ST;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class JSON2Text {
@@ -138,7 +136,7 @@ public class JSON2Text {
         String signature = lastLine.trim();
         jsonObject.put(SIGNATURE, signature);
 
-        invoiceData.parallelStream().forEach(line ->{
+        invoiceData.forEach(line ->{
             String trimLine = line.substring(line.indexOf("\t") + 1).trim();
             if (line.trim().contains(CURRENCY))
                 jsonObject.put(CURRENCY, trimLine);

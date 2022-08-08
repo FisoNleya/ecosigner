@@ -7,6 +7,7 @@ import com.sixthradix.econetsigner.dtos.MessageResponse;
 import com.sixthradix.econetsigner.dtos.SignedInvoiceResponse;
 import com.sixthradix.econetsigner.utils.FileManager;
 import com.sixthradix.econetsigner.utils.JSON2Text;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import javax.validation.Valid;
 import java.io.File;
@@ -45,6 +47,7 @@ public class ApplicationController {
     private final FileManager fileManager = new FileManager();
     private final JSON2Text converter = new JSON2Text();
 
+    @Hidden
     @PostMapping("/sign_async")
     public ResponseEntity<MessageResponse> sign(@RequestParam String callBackUrl, @Valid @RequestBody Bill billRequest){
         //Convert payload to .txt and set to ESD folder
