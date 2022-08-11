@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig {
 
-    private static final String CONTACT_EMAIL = "sixthradix.com";
+    private static final String CONTACT_EMAIL = "www.sixthradix.com";
 
     private static final String AUTHOR_ORG = "Sixth Radix";
 
@@ -24,7 +24,7 @@ public class SwaggerConfig {
 
     private Info getInfo() {
         return new Info()
-                .title("Bill Signer")
+                .title("Eco-Signer")
                 .contact(getContact())
                 .description("")
                 .version("1.0.1")
@@ -40,7 +40,7 @@ public class SwaggerConfig {
     private License getLicense() {
         return new License()
                 .name("Proprietary")
-                .url("https//www.sixth.com/license");
+                .url("https//www.sixthradix.com/license");
     }
 
 

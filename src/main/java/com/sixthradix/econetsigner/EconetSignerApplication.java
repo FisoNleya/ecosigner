@@ -22,6 +22,9 @@ public class EconetSignerApplication {
 	@Value("${app.sourceFolder}")
 	private String sourceFolder;
 
+	@Value("${app.asyncServer}")
+	private boolean asyncServer;
+
 	private final ApplicationService applicationService;
 
 	public EconetSignerApplication(ApplicationService applicationService) {
@@ -37,23 +40,29 @@ public class EconetSignerApplication {
 		File file = new File(sourceFolder);
 		logger.info("Source folder " + file.getAbsolutePath());
 
-		if(file.exists() && file.isDirectory()){
-			FileFilter fileFilter = file1 -> file1.getName().endsWith(".txt"); //process .txt files only
-			FileAlterationObserver observer = new FileAlterationObserver(file, fileFilter);
+		//check is asynchronous requests have been enabled
+		if(asyncServer){
+			if(file.exists() && file.isDirectory()){
+				FileFilter fileFilter = file1 -> file1.getName().endsWith(".txt"); //process .txt files only
+				FileAlterationObserver observer = new FileAlterationObserver(file, fileFilter);
 
-			observer.addListener(new DirWatcher(applicationService));
+				observer.addListener(new DirWatcher(applicationService));
 
-			long interval = TimeUnit.SECONDS.toMillis(3);
-			FileAlterationMonitor monitor = new FileAlterationMonitor(interval);
-			monitor.addObserver(observer);
+				long interval = TimeUnit.SECONDS.toMillis(3);
+				FileAlterationMonitor monitor = new FileAlterationMonitor(interval);
+				monitor.addObserver(observer);
 
-			try {
-				monitor.start();
-			} catch (Exception e) {
-				logger.error(e.getMessage());
+				try {
+					monitor.start();
+					logger.info("Running server in Asynchronous mode");
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				}
+			}else {
+				logger.error("Source folder either not set or mis-configured");
 			}
 		}else {
-			logger.error("Source folder either not set or mis-configured");
+			logger.info("Running server in Synchronous mode");
 		}
 	}
 }
