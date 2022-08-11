@@ -59,7 +59,7 @@ public class ApplicationController {
                 String filename = jsonObj.getString("InvoiceNumber");
                 String filepath = String.format("%s%s%s.txt", ESDOutputFolder, File.separator, filename);
                 fileManager.writeToTextFile(invoiceData, filepath);
-                logger.error("File write successful");
+                logger.info("File write successful");
             }else {
                 logger.error("ESD output folder either not set or mis-configured");
             }
@@ -91,7 +91,7 @@ public class ApplicationController {
             if(unsignedFilesDir.exists() && unsignedFilesDir.isDirectory()){
                 String filepath = String.format("%s%s%s.txt", ESDOutputFolder, File.separator, invoiceNumber);
                 fileManager.writeToTextFile(invoiceData, filepath);
-                logger.error("File write successful");
+                logger.info("File write successful");
             }else {
                 logger.error("ESD output folder either not set or mis-configured");
             }
