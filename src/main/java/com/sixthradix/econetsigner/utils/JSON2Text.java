@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.stringtemplate.v4.ST;
 
 import java.util.ArrayList;
@@ -19,6 +20,10 @@ public class JSON2Text {
     public static String CURRENCY = "Currency";
     public static String SIGNATURE = "signature";
     public static String CALLBACK_URL = "callback_url";
+
+    @Value("${app.sourceFolder}")
+    private String sourceFolder;
+
     Logger logger = LoggerFactory.getLogger(JSON2Text.class);
 
     public List<String> convert(JSONObject jsonObject){
@@ -40,15 +45,15 @@ public class JSON2Text {
         ST vat = new ST("CustomerVatNumber\t<VATNumber>");
         vat.add("VATNumber", VATNumber);
 
+        //
         ST invNum = new ST("InvoiceNumber\t<InvoiceNumber>");
-        invNum.add("InvoiceNumber", invoiceNumber);
+        invNum.add("InvoiceNumber", invoiceNumber.substring(5));
 
         ST amt = new ST("InvoiceAmount\t<InvoiceAmount>");
         amt.add("InvoiceAmount", invoiceAmount);
 
         ST taxAMT = new ST("InvoiceTaxAmount\t<invoiceTaxAmount>");
         taxAMT.add("invoiceTaxAmount", invoiceTaxAmount);
-
 
 
         data.add(currency_.render());
