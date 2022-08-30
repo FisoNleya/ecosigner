@@ -19,9 +19,10 @@ public class JSON2Text {
     public static String CURRENCY = "Currency";
     public static String SIGNATURE = "signature";
     public static String CALLBACK_URL = "callback_url";
+
     Logger logger = LoggerFactory.getLogger(JSON2Text.class);
 
-    public List<String> convert(JSONObject jsonObject){
+    public List<String> convert(JSONObject jsonObject) {
         List<String> data = new ArrayList<>();
 
         String currency = jsonObject.getString(CURRENCY);
@@ -40,6 +41,7 @@ public class JSON2Text {
         ST vat = new ST("CustomerVatNumber\t<VATNumber>");
         vat.add("VATNumber", VATNumber);
 
+        //
         ST invNum = new ST("InvoiceNumber\t<InvoiceNumber>");
         invNum.add("InvoiceNumber", invoiceNumber.substring(5));
 
@@ -49,11 +51,10 @@ public class JSON2Text {
         ST taxAMT = new ST("InvoiceTaxAmount\t<invoiceTaxAmount>");
         taxAMT.add("invoiceTaxAmount", invoiceTaxAmount);
 
-
-
         data.add(currency_.render());
         data.add(bpn_.render());
         data.add(vat.render());
+
         data.add(invNum.render());
         data.add(amt.render());
         data.add(taxAMT.render());
@@ -64,12 +65,12 @@ public class JSON2Text {
             callback.add("callback_url", callback_url);
             data.add(callback.render());
         } catch (JSONException e) {
-           logger.info("No callback url supplied");
+            logger.info("No callback url supplied");
         }
 
         // invoice items
         List<String> items = new ArrayList<>();
-        for(Object object: jsonObject.getJSONArray("ItemsXml")){
+        for (Object object : jsonObject.getJSONArray("ItemsXml")) {
             JSONObject json = (JSONObject) object;
 
             String itemName = json.getString("ITEMNAME1");
@@ -91,7 +92,7 @@ public class JSON2Text {
         return data;
     }
 
-    public JSONObject toJSON(List<String> invoiceData){
+    public JSONObject toJSON(List<String> invoiceData) {
 
         String line0 = invoiceData.get(0).trim();
         String currency = line0.substring(line0.indexOf("\t") + 1).trim();
@@ -114,7 +115,7 @@ public class JSON2Text {
         String line6 = invoiceData.get(6).trim();
         String callbackUrl = line6.substring(line6.indexOf("\t") + 1).trim();
 
-        String lastLine = invoiceData.get(invoiceData.size()-1).trim();
+        String lastLine = invoiceData.get(invoiceData.size() - 1).trim();
         String signature = lastLine.trim();
 
         JSONObject jsonObject = new JSONObject();
@@ -128,15 +129,16 @@ public class JSON2Text {
         jsonObject.put(CALLBACK_URL, callbackUrl);
         return jsonObject;
     }
-    public JSONObject toJSON2(List<String> invoiceData){
+
+    public JSONObject toJSON2(List<String> invoiceData) {
 
         JSONObject jsonObject = new JSONObject();
 
-        String lastLine = invoiceData.get(invoiceData.size()-1).trim();
+        String lastLine = invoiceData.get(invoiceData.size() - 1).trim();
         String signature = lastLine.trim();
         jsonObject.put(SIGNATURE, signature);
 
-        invoiceData.forEach(line ->{
+        invoiceData.forEach(line -> {
             String trimLine = line.substring(line.indexOf("\t") + 1).trim();
             if (line.trim().contains(CURRENCY))
                 jsonObject.put(CURRENCY, trimLine);
