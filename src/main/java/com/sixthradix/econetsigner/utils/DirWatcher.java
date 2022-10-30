@@ -1,7 +1,7 @@
 package com.sixthradix.econetsigner.utils;
 
 import com.sixthradix.econetsigner.dtos.SignedInvoiceResponse;
-import com.sixthradix.econetsigner.services.ApplicationService;
+import com.sixthradix.econetsigner.services.SigningService;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.json.JSONObject;
@@ -16,11 +16,11 @@ public class DirWatcher implements FileAlterationListener {
     Logger logger = LoggerFactory.getLogger(DirWatcher.class);
     private final FileManager fileManager = new FileManager();
 
-    private final ApplicationService applicationService;
+    private final SigningService applicationService;
     private final JSON2Text converter = new JSON2Text();
 
 
-    public DirWatcher(ApplicationService applicationService) {
+    public DirWatcher(SigningService applicationService) {
         this.applicationService = applicationService;
     }
 

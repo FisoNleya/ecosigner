@@ -1,6 +1,6 @@
 package com.sixthradix.econetsigner;
 
-import com.sixthradix.econetsigner.services.ApplicationService;
+import com.sixthradix.econetsigner.services.SigningService;
 import com.sixthradix.econetsigner.utils.DirWatcher;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
@@ -25,9 +25,9 @@ public class EconetSignerApplication {
 	@Value("${app.asyncServer}")
 	private boolean asyncServer;
 
-	private final ApplicationService applicationService;
+	private final SigningService applicationService;
 
-	public EconetSignerApplication(ApplicationService applicationService) {
+	public EconetSignerApplication(SigningService applicationService) {
 		this.applicationService = applicationService;
 	}
 
