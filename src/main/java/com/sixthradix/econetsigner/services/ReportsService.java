@@ -1,6 +1,6 @@
 package com.sixthradix.econetsigner.services;
 
-import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUser;
+import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUserDto;
 import com.sixthradix.econetsigner.entities.Report;
 import com.sixthradix.econetsigner.repositories.ReportRepository;
 import com.sixthradix.econetsigner.utils.DateUtil;
@@ -27,7 +27,7 @@ public class ReportsService {
 
     private final DateUtil dateUtil;
 
-    public void logReportRecord(String invoiceNumber, AuthenticatedUser user, String status) {
+    public void logReportRecord(String invoiceNumber, AuthenticatedUserDto user, String status) {
 
         reportRepository.save(Report.builder()
                 .userName(user.getUserName())

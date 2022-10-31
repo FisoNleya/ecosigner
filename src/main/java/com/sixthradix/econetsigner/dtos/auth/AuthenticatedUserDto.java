@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticatedUser implements Serializable {
+public class AuthenticatedUserDto implements Serializable {
 
     private static final long serialVersionUID = 3424323345L;
 

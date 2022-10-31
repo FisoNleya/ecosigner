@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sixthradix.econetsigner.dtos.Bill;
 import com.sixthradix.econetsigner.dtos.MessageResponse;
 import com.sixthradix.econetsigner.dtos.SignedInvoiceResponse;
-import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUser;
+import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUserDto;
 import com.sixthradix.econetsigner.utils.FileManager;
 import com.sixthradix.econetsigner.utils.JSON2Text;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +62,7 @@ public class SigningService {
     }
 
 
-    public ResponseEntity<Object> signBill(Bill billRequest, AuthenticatedUser user) {
+    public ResponseEntity<Object> signBill(Bill billRequest, AuthenticatedUserDto user) {
         MessageResponse messageResponse = new MessageResponse();
         String status = FAIL_STATUS;
 

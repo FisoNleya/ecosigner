@@ -30,7 +30,7 @@ public class CustomAuthenticationFilter implements Filter {
         var http = (HttpServletRequest) request;
         String token = http.getHeader("Authorization");
 
-        var authenticatedUser = new AuthenticatedUser(extractAuthorities("Admin User"));
+        var authenticatedUser = new AuthenticatedUser(null);
         authenticatedUser.setToken(token);
         Authentication result = authenticationManager.authenticate(authenticatedUser);
         result.setAuthenticated(true);
@@ -42,14 +42,4 @@ public class CustomAuthenticationFilter implements Filter {
         }
     }
 
-    private List<GrantedAuthority> extractAuthorities(String scopes){
-        String[] data = scopes.split(" ");
-        //remove roles
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for(String item: data){
-            GrantedAuthority authority = new SimpleGrantedAuthority(item);
-            authorities.add(authority);
-        }
-        return authorities;
-    }
 }

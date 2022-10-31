@@ -8,12 +8,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Component
@@ -35,7 +39,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         User user = retrieveUser(token);
         if (user != null) {
-            var authenticatedUser = new AuthenticatedUser(user.getUser_name(), authentication.getAuthorities());
+            var authenticatedUser = new AuthenticatedUser(user.getUser_name(), extractAuthorities(user.getAuthorities()));
             authenticatedUser.setToken(token);
             authenticatedUser.setUserName(user.getUser_name());
             authenticatedUser.setEmail(user.getEmail());
@@ -68,5 +72,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             log.error(e.getMessage());
             return null;
         }
+    }
+
+    private List<GrantedAuthority> extractAuthorities(List<String> scopes){
+        //remove roles
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for(String item: scopes){
+            GrantedAuthority authority = new SimpleGrantedAuthority(item);
+            authorities.add(authority);
+        }
+        return authorities;
     }
 }
