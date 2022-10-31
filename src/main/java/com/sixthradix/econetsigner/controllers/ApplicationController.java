@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sixthradix.econetsigner.dtos.Bill;
 import com.sixthradix.econetsigner.dtos.MessageResponse;
 import com.sixthradix.econetsigner.dtos.SignedInvoiceResponse;
+import com.sixthradix.econetsigner.security.authentication.AuthenticatedUser;
 import com.sixthradix.econetsigner.utils.FileManager;
 import com.sixthradix.econetsigner.utils.JSON2Text;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -49,7 +50,7 @@ public class ApplicationController {
 
     @Hidden
     @PostMapping("/sign_async")
-    public ResponseEntity<MessageResponse> sign(@RequestParam String callBackUrl, @Valid @RequestBody Bill billRequest){
+    public ResponseEntity<MessageResponse> sign(@RequestParam String callBackUrl, @Valid @RequestBody Bill billRequest, AuthenticatedUser authenticatedUser) {
         //Convert payload to .txt and set to ESD folder
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -58,16 +59,16 @@ public class ApplicationController {
             jsonObj.put(JSON2Text.CALLBACK_URL, callBackUrl); //append callback to file to later processing
             List<String> invoiceData = new JSON2Text().convert(jsonObj);
             File file = new File(ESDOutputFolder);
-            if(file.exists() && file.isDirectory()){
+            if (file.exists() && file.isDirectory()) {
                 String filename = jsonObj.getString("InvoiceNumber");
                 String filepath = String.format("%s%s%s.txt", ESDOutputFolder, File.separator, filename);
                 fileManager.writeToTextFile(invoiceData, filepath);
                 logger.error("File write successful");
-            }else {
+            } else {
                 logger.error("ESD output folder either not set or mis-configured");
             }
         } catch (JsonProcessingException e) {
-           logger.error(e.getMessage());
+            logger.error(e.getMessage());
         } catch (IOException e) {
             logger.error(e.getMessage().concat(""));
         }
@@ -78,7 +79,8 @@ public class ApplicationController {
 
 
     @PostMapping("/sign")
-    public ResponseEntity<Object> sign(@Valid @RequestBody Bill billRequest){
+    public ResponseEntity<Object> sign(@Valid @RequestBody Bill billRequest, AuthenticatedUser authenticatedUser) {
+        System.out.println(authenticatedUser);
         MessageResponse messageResponse = new MessageResponse();
 
         //Convert payload to .txt and set to ESD folder
@@ -91,25 +93,25 @@ public class ApplicationController {
             String invoiceNumber = jsonObj.getString("InvoiceNumber");
 
             File unsignedFilesDir = new File(ESDOutputFolder);
-            if(unsignedFilesDir.exists() && unsignedFilesDir.isDirectory()){
+            if (unsignedFilesDir.exists() && unsignedFilesDir.isDirectory()) {
                 String filepath = String.format("%s%s%s.txt", ESDOutputFolder, File.separator, invoiceNumber);
                 fileManager.writeToTextFile(invoiceData, filepath);
                 logger.error("File write successful");
-            }else {
+            } else {
                 logger.error("ESD output folder either not set or mis-configured");
             }
 
             /*Wait for file to be signed*/
             int count = 0;
             File signedFilesDir = new File(sourceFolder);
-            while(count < tries){
-                Collection<File> files = FileUtils.listFiles(signedFilesDir, new String[] {"txt"}, false);
+            while (count < tries) {
+                Collection<File> files = FileUtils.listFiles(signedFilesDir, new String[]{"txt"}, false);
 
                 File invoiceFile = files.parallelStream().filter(file -> invoiceNumber.equals(FilenameUtils.getBaseName(file.getAbsolutePath())))
-                .findAny()
-                .orElse(null);
+                        .findAny()
+                        .orElse(null);
 
-                if(invoiceFile != null){
+                if (invoiceFile != null) {
                     //Read file to json and respond
                     List<String> signedInvoiceData = fileManager.readTextFile(invoiceFile, false);
 
@@ -121,7 +123,7 @@ public class ApplicationController {
                     response.setInvoiceAMT(jsonObject.getString(JSON2Text.INVOICE_AMOUNT));
                     response.setSignature(jsonObject.getString(JSON2Text.SIGNATURE));
 
-                    if(!response.getSignature().contains(response.getInvoiceAMT()))
+                    if (!response.getSignature().contains(response.getInvoiceAMT()))
                         return new ResponseEntity<>("Invalid signature, check the ESD", HttpStatus.OK);
 
                     return new ResponseEntity<>(response, HttpStatus.OK);
@@ -132,10 +134,10 @@ public class ApplicationController {
             }
 
         } catch (JsonProcessingException e) {
-           logger.error(e.getMessage());
+            logger.error(e.getMessage());
         } catch (IOException e) {
             logger.error(e.getMessage().concat(""));
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
 
@@ -144,5 +146,10 @@ public class ApplicationController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-
+    @GetMapping("/test")
+    public ResponseEntity<String> test(AuthenticatedUser authenticatedUser) {
+        System.out.println(authenticatedUser);
+        MessageResponse messageResponse = new MessageResponse();
+        return new ResponseEntity<>("pooo", HttpStatus.OK);
+    }
 }
