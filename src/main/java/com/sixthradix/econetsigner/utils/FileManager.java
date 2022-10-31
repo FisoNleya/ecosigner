@@ -2,6 +2,7 @@ package com.sixthradix.econetsigner.utils;
 
 
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 
+@Service
 public class FileManager {
     private final static Logger logger = Logger.getLogger(FileManager.class.getName());
 
