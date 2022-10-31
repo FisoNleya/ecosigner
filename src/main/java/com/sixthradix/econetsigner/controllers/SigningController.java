@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sixthradix.econetsigner.dtos.Bill;
 import com.sixthradix.econetsigner.dtos.MessageResponse;
-import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUser;
+import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUserDto;
+import com.sixthradix.econetsigner.security.authentication.AuthenticatedUser;
 import com.sixthradix.econetsigner.services.SigningService;
 import com.sixthradix.econetsigner.utils.FileManager;
 import com.sixthradix.econetsigner.utils.JSON2Text;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,10 @@ public class SigningController {
     @Value("${app.sourceFolder}")
     private String sourceFolder;
 
-    private final ObjectMapper mapper;
+    private final ObjectMapper objectMapper;
+
+
+    private final ModelMapper modelMapper;
 
     private final FileManager fileManager;
 
@@ -48,7 +53,7 @@ public class SigningController {
         //Convert payload to .txt and set to ESD folder
         try {
 
-            String jsonStr = mapper.writeValueAsString(billRequest);
+            String jsonStr = objectMapper.writeValueAsString(billRequest);
             JSONObject jsonObj = new JSONObject(jsonStr);
             jsonObj.put(JSON2Text.CALLBACK_URL, callBackUrl); //append callback to file to later processing
             List<String> invoiceData = new JSON2Text().convert(jsonObj);
@@ -74,7 +79,8 @@ public class SigningController {
 
     @PostMapping("/sign")
     public ResponseEntity<Object> sign(@Valid @RequestBody Bill billRequest, AuthenticatedUser user){
-        return signingService.signBill(billRequest, user);
+        AuthenticatedUserDto userDto = modelMapper.map(user, AuthenticatedUserDto.class);
+        return signingService.signBill(billRequest, userDto);
     }
 
 

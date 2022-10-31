@@ -1,7 +1,8 @@
 package com.sixthradix.econetsigner.controllers;
 
-import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUser;
+import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUserDto;
 import com.sixthradix.econetsigner.entities.Report;
+import com.sixthradix.econetsigner.security.authentication.AuthenticatedUser;
 import com.sixthradix.econetsigner.services.ReportsService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
