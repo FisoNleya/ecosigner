@@ -1,14 +1,16 @@
 package com.sixthradix.econetsigner.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.stringtemplate.v4.ST;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
+@Service
 public class JSON2Text {
 
     public static String BPN = "CustomerBPN";
@@ -20,7 +22,7 @@ public class JSON2Text {
     public static String SIGNATURE = "signature";
     public static String CALLBACK_URL = "callback_url";
 
-    Logger logger = LoggerFactory.getLogger(JSON2Text.class);
+
 
     public List<String> convert(JSONObject jsonObject) {
         List<String> data = new ArrayList<>();
@@ -65,7 +67,7 @@ public class JSON2Text {
             callback.add("callback_url", callback_url);
             data.add(callback.render());
         } catch (JSONException e) {
-            logger.info("No callback url supplied");
+            log.info("No callback url supplied");
         }
 
         // invoice items
