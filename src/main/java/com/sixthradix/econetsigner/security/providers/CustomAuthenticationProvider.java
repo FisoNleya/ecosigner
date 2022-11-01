@@ -38,7 +38,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String token = authentication.getCredentials().toString();
 
         User user = retrieveUser(token);
-        if (user != null) {
+        if (user != null && user.getUser_name() != null) {
             var authenticatedUser = new AuthenticatedUser(user.getUser_name(), extractAuthorities(user.getAuthorities()));
             authenticatedUser.setToken(token);
             authenticatedUser.setUserName(user.getUser_name());

@@ -31,10 +31,20 @@ public class SecurityConfig {
         return authenticationManagerBuilder.build();
     }
 
+    private static final String[] AUTH_WHITELIST = {
+            // -- swagger ui
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.addFilterAt(new CustomAuthenticationFilter(authManagerBuilder.getOrBuild()), BasicAuthenticationFilter.class);
-        http.csrf().disable().authorizeRequests()
+
+        http.csrf().disable()
+                .authorizeRequests()
                 .anyRequest()
                 .permitAll();
         return http.build();
