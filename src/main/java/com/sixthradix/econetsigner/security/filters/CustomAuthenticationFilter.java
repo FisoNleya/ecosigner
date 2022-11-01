@@ -4,16 +4,14 @@ import com.sixthradix.econetsigner.security.authentication.AuthenticatedUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @Slf4j
@@ -27,18 +25,24 @@ public class CustomAuthenticationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        var http = (HttpServletRequest) request;
-        String token = http.getHeader("Authorization");
+        try {
+            var http = (HttpServletRequest) request;
+            String token = http.getHeader("Authorization");
 
-        var authenticatedUser = new AuthenticatedUser(null);
-        authenticatedUser.setToken(token);
-        Authentication result = authenticationManager.authenticate(authenticatedUser);
-        result.setAuthenticated(true);
-        if(result.isAuthenticated()){
-            SecurityContextHolder.getContext().setAuthentication(result);
-            filterChain.doFilter(request, response);
-        }else {
-            log.error("User not authenticated");
+            var authenticatedUser = new AuthenticatedUser(null);
+            authenticatedUser.setToken(token);
+            Authentication result = authenticationManager.authenticate(authenticatedUser);
+            result.setAuthenticated(true);
+            if(result.isAuthenticated()){
+                SecurityContextHolder.getContext().setAuthentication(result);
+                filterChain.doFilter(request, response);
+            }else {
+                log.error("User not authenticated");
+            }
+        } catch (AuthenticationException e) {
+            log.error(e.getMessage());
+            HttpServletResponse httpResponse = (HttpServletResponse) response;
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication not provided");
         }
     }
 
