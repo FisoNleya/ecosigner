@@ -18,11 +18,11 @@ public class AuthenticatedUserDto implements Serializable {
 
     private static final long serialVersionUID = 3424323345L;
 
-    @JsonProperty("user_name")
+    @JsonProperty("userName")
     private String userName;
     @JsonProperty("scope")
     private List<String> scope;
-    @JsonProperty("fullName")
+    @JsonProperty("fullname")
     private String fullName;
     @JsonProperty("exp")
     private Integer exp;

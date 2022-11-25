@@ -1,6 +1,7 @@
 package com.sixthradix.econetsigner.security.providers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sixthradix.econetsigner.dtos.ValidationResponse;
 import com.sixthradix.econetsigner.models.User;
 import com.sixthradix.econetsigner.security.authentication.AuthenticatedUser;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -38,10 +40,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String token = authentication.getCredentials().toString();
 
         User user = retrieveUser(token);
-        if (user != null && user.getUser_name() != null) {
-            var authenticatedUser = new AuthenticatedUser(user.getUser_name(), extractAuthorities(user.getAuthorities()));
+        if (user != null && user.getUsername() != null) {
+            var authenticatedUser = new AuthenticatedUser(user.getUsername(), extractAuthorities(Collections.singletonList(user.getRole())));
             authenticatedUser.setToken(token);
-            authenticatedUser.setUserName(user.getUser_name());
+            authenticatedUser.setUserName(user.getUsername());
+            authenticatedUser.setFullName(user.getFullName());
             authenticatedUser.setEmail(user.getEmail());
 
             return authenticatedUser;
@@ -67,7 +70,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return objectMapper.readValue(response.body(), User.class);
+            var responseObj = objectMapper.readValue(response.body(), ValidationResponse.class);
+            return User.builder()
+                    .username(responseObj.getUsername())
+                    .email(responseObj.getEmail())
+                    .fullName(responseObj.getFullname())
+                    .role(responseObj.getRole())
+                    .build();
         } catch (Exception e) {
             log.error(e.getMessage());
             return null;

@@ -18,6 +18,8 @@ public class AuthenticatedUser extends AbstractAuthenticationToken {
     private Long id;
     private String email;
     private String userName;
+    private String fullName;
+    private String role;
     private String token;
 
     public AuthenticatedUser(String userName, Collection<? extends GrantedAuthority> authorities) {
