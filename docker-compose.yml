@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+  users-service:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - ${EXTERNAL_PORT}:${INTERNAL_PORT}
+    environment:
+      SPRING_APPLICATION_JSON: '{
+        "spring.datasource.url"  : "jdbc:postgresql://$DB_HOST:$DB_PORT/$DB_NAME",
+        "spring.datasource.username" : "$DB_USER",
+        "spring.datasource.password" : "$DB_PASSWORD",
+        "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
+        "spring.jpa.hibernate.ddl-auto" : "update"
+      }'
+    volumes:
+      - .m2:/root/.m2
+    restart: on-failure
+
