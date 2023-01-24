@@ -2,6 +2,7 @@ package com.sixthradix.econetsigner.security.filters;
 
 import com.sixthradix.econetsigner.security.authentication.AuthenticatedUser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -27,17 +28,24 @@ public class CustomAuthenticationFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         try {
             var http = (HttpServletRequest) request;
-            String token = http.getHeader("Authorization");
 
-            var authenticatedUser = new AuthenticatedUser(null);
-            authenticatedUser.setToken(token);
-            Authentication result = authenticationManager.authenticate(authenticatedUser);
-            result.setAuthenticated(true);
-            if(result.isAuthenticated()){
-                SecurityContextHolder.getContext().setAuthentication(result);
-                filterChain.doFilter(request, response);
+            //allow preflighted requests
+            if(HttpMethod.OPTIONS.name().equals(((HttpServletRequest) request).getMethod())){
+                HttpServletResponse httpResponse = (HttpServletResponse) response;
+                httpResponse.setStatus(200);
             }else {
-                log.error("User not authenticated");
+                String token = http.getHeader("Authorization");
+
+                var authenticatedUser = new AuthenticatedUser(null);
+                authenticatedUser.setToken(token);
+                Authentication result = authenticationManager.authenticate(authenticatedUser);
+                result.setAuthenticated(true);
+                if(result.isAuthenticated()){
+                    SecurityContextHolder.getContext().setAuthentication(result);
+                    filterChain.doFilter(request, response);
+                }else {
+                    log.error("User not authenticated");
+                }
             }
         } catch (AuthenticationException e) {
             log.error(e.getMessage());

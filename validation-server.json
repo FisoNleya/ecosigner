@@ -1,18 +1,12 @@
 {
   "user": {
-    "user_name": "smubaiwa",
-    "scope": [
-      "WEB"
-    ],
-    "fullName": "Samson Mubaiwa",
-    "exp": 1666382779,
-    "authorities": [
-      "Remote Desktop Users",
-      "Administrators",
-      "Ecorec Admin"
-    ],
-    "jti": "1c4b4fd1-80c0-4b0e-b23b-97023cd49825",
-    "email": null,
-    "client_id": "enterprise"
+    "statusCode": 200,
+    "success": true,
+    "message": "token successfully verified",
+    "username": "test_ecorec1",
+    "fullname": "Test Ecorec1",
+    "email": "test_ecorec1@testad.co.zw",
+    "role": "Back Office Cashier",
+    "valid": true
   }
 }

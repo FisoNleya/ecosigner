@@ -43,7 +43,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.addFilterAt(new CustomAuthenticationFilter(authManagerBuilder.getOrBuild()), BasicAuthenticationFilter.class);
 
-        http.csrf().disable()
+        http.cors().and()
+                .csrf().disable()
                 .authorizeRequests()
                 .anyRequest()
                 .permitAll();
