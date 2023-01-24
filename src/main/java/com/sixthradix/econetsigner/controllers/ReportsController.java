@@ -1,6 +1,7 @@
 package com.sixthradix.econetsigner.controllers;
 
 import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUserDto;
+import com.sixthradix.econetsigner.dtos.reports.UserReportDto;
 import com.sixthradix.econetsigner.entities.Report;
 import com.sixthradix.econetsigner.security.authentication.AuthenticatedUser;
 import com.sixthradix.econetsigner.services.ReportsService;
@@ -42,5 +43,10 @@ public class ReportsController {
         return new ResponseEntity<>(reportsService
                 .fetchReports(userName, invoiceNumber, statusFailed, pageable, startDate, endDate), HttpStatus.OK);
 
+    }
+
+    @GetMapping("/reports/users/{userName}")
+    public ResponseEntity<UserReportDto> fetchUserReport(@PathVariable String userName){
+        return new ResponseEntity<>(reportsService.fetchUserReport(userName), HttpStatus.OK);
     }
 }

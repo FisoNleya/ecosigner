@@ -16,6 +16,8 @@ public class Bill implements Serializable {
 
     private static final long serialVersionUID = 34345L;
 
+    @JsonProperty("Title")
+    private String title;
     @JsonProperty("Currency")
     private String currency;
     @JsonProperty("BranchName")

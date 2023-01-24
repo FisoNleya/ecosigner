@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
@@ -38,5 +39,8 @@ public class Report implements Serializable {
 
     private String status;
 
-
+    private String signature;
+    private String currency;
+    private BigDecimal invoiceAmount;
+    private BigDecimal invoiceTaxAmount;
 }

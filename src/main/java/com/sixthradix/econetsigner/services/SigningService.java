@@ -6,6 +6,7 @@ import com.sixthradix.econetsigner.dtos.Bill;
 import com.sixthradix.econetsigner.dtos.MessageResponse;
 import com.sixthradix.econetsigner.dtos.SignedInvoiceResponse;
 import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUserDto;
+import com.sixthradix.econetsigner.dtos.reports.ReportDto;
 import com.sixthradix.econetsigner.utils.FileManager;
 import com.sixthradix.econetsigner.utils.JSON2Text;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
@@ -107,12 +109,26 @@ public class SigningService {
                     response.setSignature(jsonObject.getString(JSON2Text.SIGNATURE));
 
                     if (!response.getSignature().contains(response.getInvoiceAMT())) {
-                        reportsService.logReportRecord(invoiceNumber, user, status);
+                        var report = ReportDto.builder()
+                                .user(user)
+                                .invoiceNumber(invoiceNumber)
+                                .status(status)
+                                .build();
+                        reportsService.logReportRecord(report);
                         return new ResponseEntity<>(INVALID_SIGNATURE, HttpStatus.EXPECTATION_FAILED);
                     }
 
                     status = SUCCESS_STATUS;
-                    reportsService.logReportRecord(invoiceNumber, user, status);
+                    var report = ReportDto.builder()
+                                    .invoiceNumber(invoiceNumber)
+                                    .signature(response.getSignature())
+                                    .user(user)
+                                    .status(status)
+                                    .currency(billRequest.getCurrency())
+                                    .invoiceAmount(BigDecimal.valueOf(Double.parseDouble(billRequest.getInvoiceAmount())))
+                                    .invoiceTaxAmount(BigDecimal.valueOf(Double.parseDouble(billRequest.getInvoiceTaxAmount())))
+                                    .build();
+                    reportsService.logReportRecord(report);
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
                 //wait a bit before checking for signed file again
@@ -130,7 +146,12 @@ public class SigningService {
         }
 
 
-        reportsService.logReportRecord(billRequest.getInvoiceNumber(), user, status);
+        var report = ReportDto.builder()
+                .user(user)
+                .invoiceNumber(billRequest.getInvoiceNumber())
+                .status(status)
+                .build();
+        reportsService.logReportRecord(report);
         messageResponse.setMessage(FAILED_CHECK_ESD);
         return new ResponseEntity<>(messageResponse, HttpStatus.EXPECTATION_FAILED);
     }
