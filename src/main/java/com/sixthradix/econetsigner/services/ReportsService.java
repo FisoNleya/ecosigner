@@ -37,6 +37,7 @@ public class ReportsService {
                 .fullName(report.getUser().getFullName())
                 .createdAt(LocalDateTime.now())
                 .invoiceNumber(report.getInvoiceNumber())
+                .status(report.getStatus())
                 .signature(report.getSignature())
                 .currency(report.getCurrency())
                 .invoiceAmount(report.getInvoiceAmount())
@@ -82,14 +83,36 @@ public class ReportsService {
         return (date.isAfter(start) || date.isEqual(start)) && (report.getCreatedAt().isBefore(end) || date.isEqual(start));
     }
 
-    public UserReportDto fetchUserReport(String userName) {
+    public UserReportDto fetchUserReport(String userName, String startDate, String endDate) {
         UserReportDto userReportDto = new UserReportDto();
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
+        if(startDate != null && endDate != null ){
+            start = dateUtil.stringToDate(startDate);
+            end = dateUtil.stringToDate(endDate);
+        }else {
+            start = dateUtil.stringToDate("2000-10-10");
+            end = dateUtil.stringToDate("3030-10-10");
+        }
+
+        if(startDate == null && endDate != null){
+            start = dateUtil.stringToDate("2000-10-10");
+            end = dateUtil.stringToDate(endDate);
+        }
+        if(endDate == null && startDate != null){
+            end = dateUtil.stringToDate("3030-10-10");
+            start = dateUtil.stringToDate(startDate);
+        }
+
+
+
 
         List<CurrencyReport> currencyReports = new ArrayList<>();
         var currencies = reportRepository.getCurrencies();
         for(String currency: currencies){
-            var invoiceAmountTotal = reportRepository.getInvoiceTotalAmountByCurrency(userName, currency).orElse(BigDecimal.ZERO);
-            var invoiceTaxAmountTotal = reportRepository.getInvoiceTaxTotalAmountByCurrency(userName, currency).orElse(BigDecimal.ZERO);
+            var invoiceAmountTotal = reportRepository.getInvoiceTotalAmountByCurrency(userName, currency, start, end).orElse(BigDecimal.ZERO);
+            var invoiceTaxAmountTotal = reportRepository.getInvoiceTaxTotalAmountByCurrency(userName, currency, start, end).orElse(BigDecimal.ZERO);
             var currencyReport = CurrencyReport.builder()
                     .name(currency)
                     .invoiceAmountTotal(invoiceAmountTotal)
@@ -97,7 +120,7 @@ public class ReportsService {
                     .build();
             currencyReports.add(currencyReport);
         }
-        var totalInvoices = reportRepository.getTotalInvoiceCountByUser(userName);
+        var totalInvoices = reportRepository.getTotalInvoiceCountByUser(userName, start, end);
 
         userReportDto.setUserName(userName);
         userReportDto.setCurrencyReports(currencyReports);

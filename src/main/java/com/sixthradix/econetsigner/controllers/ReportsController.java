@@ -46,7 +46,25 @@ public class ReportsController {
     }
 
     @GetMapping("/reports/users/{userName}")
-    public ResponseEntity<UserReportDto> fetchUserReport(@PathVariable String userName){
-        return new ResponseEntity<>(reportsService.fetchUserReport(userName), HttpStatus.OK);
+    public ResponseEntity<UserReportDto> fetchUserReport(
+            @PathVariable String userName,
+            @Parameter(example = "2022-10-10") @RequestParam(required = false) String startDate,
+            @Parameter(example = "2022-11-10") @RequestParam(required = false) String endDate){
+        return new ResponseEntity<>(reportsService.fetchUserReport(userName, startDate, endDate), HttpStatus.OK);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

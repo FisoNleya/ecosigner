@@ -113,6 +113,9 @@ public class SigningService {
                                 .user(user)
                                 .invoiceNumber(invoiceNumber)
                                 .status(status)
+                                .currency(billRequest.getCurrency())
+                                .invoiceAmount(BigDecimal.valueOf(Double.parseDouble(billRequest.getInvoiceAmount())))
+                                .invoiceTaxAmount(BigDecimal.valueOf(Double.parseDouble(billRequest.getInvoiceTaxAmount())))
                                 .build();
                         reportsService.logReportRecord(report);
                         return new ResponseEntity<>(INVALID_SIGNATURE, HttpStatus.EXPECTATION_FAILED);
@@ -150,6 +153,9 @@ public class SigningService {
                 .user(user)
                 .invoiceNumber(billRequest.getInvoiceNumber())
                 .status(status)
+                .currency(billRequest.getCurrency())
+                .invoiceAmount(BigDecimal.valueOf(Double.parseDouble(billRequest.getInvoiceAmount())))
+                .invoiceTaxAmount(BigDecimal.valueOf(Double.parseDouble(billRequest.getInvoiceTaxAmount())))
                 .build();
         reportsService.logReportRecord(report);
         messageResponse.setMessage(FAILED_CHECK_ESD);
