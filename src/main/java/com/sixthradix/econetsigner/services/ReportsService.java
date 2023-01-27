@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.sixthradix.econetsigner.utils.DateUtil.DATE_TIME_FORMATTER;
+
 @Service
 @RequiredArgsConstructor
 public class ReportsService {
@@ -125,6 +127,11 @@ public class ReportsService {
         userReportDto.setUserName(userName);
         userReportDto.setCurrencyReports(currencyReports);
         userReportDto.setNumberOfInvoices(totalInvoices);
+
+        //report dates
+        userReportDto.setReportStartDate(start.format(DATE_TIME_FORMATTER));
+        userReportDto.setReportEndDate(end.format(DATE_TIME_FORMATTER));
+        userReportDto.setReportCreatedAt(LocalDateTime.now().format(DATE_TIME_FORMATTER));
         return userReportDto;
     }
 
