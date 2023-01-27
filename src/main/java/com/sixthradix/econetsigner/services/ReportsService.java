@@ -129,9 +129,11 @@ public class ReportsService {
         userReportDto.setNumberOfInvoices(totalInvoices);
 
         //report dates
+        String currentDate = LocalDateTime.now().format(DATE_TIME_FORMATTER);
+
         userReportDto.setReportStartDate(start.format(DATE_TIME_FORMATTER));
-        userReportDto.setReportEndDate(end.format(DATE_TIME_FORMATTER));
-        userReportDto.setReportCreatedAt(LocalDateTime.now().format(DATE_TIME_FORMATTER));
+        userReportDto.setReportEndDate(endDate == null ? currentDate : end.format(DATE_TIME_FORMATTER));
+        userReportDto.setReportCreatedAt(currentDate);
         return userReportDto;
     }
 
