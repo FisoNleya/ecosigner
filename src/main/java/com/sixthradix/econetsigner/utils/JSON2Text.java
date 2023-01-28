@@ -45,7 +45,7 @@ public class JSON2Text {
 
         //
         ST invNum = new ST("InvoiceNumber\t<InvoiceNumber>");
-        invNum.add("InvoiceNumber", invoiceNumber.substring(5));
+        invNum.add("InvoiceNumber", invoiceNumber);
 
         ST amt = new ST("InvoiceAmount\t<InvoiceAmount>");
         amt.add("InvoiceAmount", invoiceAmount);

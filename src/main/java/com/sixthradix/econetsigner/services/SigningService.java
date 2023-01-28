@@ -7,6 +7,7 @@ import com.sixthradix.econetsigner.dtos.MessageResponse;
 import com.sixthradix.econetsigner.dtos.SignedInvoiceResponse;
 import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUserDto;
 import com.sixthradix.econetsigner.dtos.reports.ReportDto;
+import com.sixthradix.econetsigner.utils.BillUtils;
 import com.sixthradix.econetsigner.utils.FileManager;
 import com.sixthradix.econetsigner.utils.JSON2Text;
 import lombok.RequiredArgsConstructor;
@@ -64,18 +65,23 @@ public class SigningService {
     }
 
 
+    private List<String> getInvoiceData(Bill billRequest) throws JsonProcessingException {
+        //shorten invoice number for ESD Device
+        billRequest.setInvoiceNumber(BillUtils.shortenInvoiceNumber(billRequest.getInvoiceNumber()));
+
+        String jsonStr = mapper.writeValueAsString(billRequest);
+        JSONObject jsonObj = new JSONObject(jsonStr);
+        return new JSON2Text().convert(jsonObj);
+    }
+
     public ResponseEntity<Object> signBill(Bill billRequest, AuthenticatedUserDto user) {
+        String invoiceNumber = billRequest.getInvoiceNumber();
         MessageResponse messageResponse = new MessageResponse();
         String status = FAIL_STATUS;
 
         //Convert payload to .txt and set to ESD folder
         try {
-
-            String jsonStr = mapper.writeValueAsString(billRequest);
-            JSONObject jsonObj = new JSONObject(jsonStr);
-            List<String> invoiceData = new JSON2Text().convert(jsonObj);
-
-            String invoiceNumber = jsonObj.getString("InvoiceNumber");
+            List<String> invoiceData = getInvoiceData(billRequest);
 
             File unsignedFilesDir = new File(ESDOutputFolder);
             if (unsignedFilesDir.exists() && unsignedFilesDir.isDirectory()) {
@@ -151,7 +157,7 @@ public class SigningService {
 
         var report = ReportDto.builder()
                 .user(user)
-                .invoiceNumber(billRequest.getInvoiceNumber())
+                .invoiceNumber(invoiceNumber)
                 .status(status)
                 .currency(billRequest.getCurrency())
                 .invoiceAmount(BigDecimal.valueOf(Double.parseDouble(billRequest.getInvoiceAmount())))
