@@ -39,4 +39,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
             );
+
+    List<Report> findAllByStatus(String status);
 }

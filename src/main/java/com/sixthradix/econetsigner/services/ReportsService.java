@@ -1,6 +1,5 @@
 package com.sixthradix.econetsigner.services;
 
-import com.sixthradix.econetsigner.dtos.auth.AuthenticatedUserDto;
 import com.sixthradix.econetsigner.dtos.reports.CurrencyReport;
 import com.sixthradix.econetsigner.dtos.reports.ReportDto;
 import com.sixthradix.econetsigner.dtos.reports.UserReportDto;
@@ -20,14 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.sixthradix.econetsigner.services.SigningService.FAIL_STATUS;
+import static com.sixthradix.econetsigner.services.SigningService.SUCCESS_STATUS;
 import static com.sixthradix.econetsigner.utils.DateUtil.DATE_TIME_FORMATTER;
 
 @Service
 @RequiredArgsConstructor
 public class ReportsService {
-
-    public static final String FAIL_STATUS = "Failed";
-    public static final String SUCCESS_STATUS = "Success";
 
     private final ReportRepository reportRepository;
     private final DateUtil dateUtil;

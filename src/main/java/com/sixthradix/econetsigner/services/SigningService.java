@@ -34,18 +34,17 @@ public class SigningService {
 
 
     public static final String FAILED_CHECK_ESD = "Failed to sign invoice, check the ESD";
-
     public static final String INVALID_SIGNATURE = "Invalid signature, check the ESD";
-
     public static final String FAIL_STATUS = "Failed";
-
     public static final String SUCCESS_STATUS = "Success";
+
+
+    @Value("${app.sourceFolder}")
+    private String sourceFolder;
 
     @Value("${app.ESDOutputFolder}")
     private String ESDOutputFolder;
 
-    @Value("${app.sourceFolder}")
-    private String sourceFolder;
 
     @Value("${app.wait}")
     private int tries;
@@ -83,9 +82,9 @@ public class SigningService {
         try {
             List<String> invoiceData = getInvoiceData(billRequest);
 
-            File unsignedFilesDir = new File(ESDOutputFolder);
+            File unsignedFilesDir = new File(sourceFolder);
             if (unsignedFilesDir.exists() && unsignedFilesDir.isDirectory()) {
-                String filepath = String.format("%s%s%s.txt", ESDOutputFolder, File.separator, invoiceNumber);
+                String filepath = String.format("%s%s%s.txt", sourceFolder, File.separator, invoiceNumber);
                 fileManager.writeToTextFile(invoiceData, filepath);
                 log.error("File write successful");
             } else {
@@ -94,7 +93,7 @@ public class SigningService {
 
             /*Wait for file to be signed*/
             int count = 0;
-            File signedFilesDir = new File(sourceFolder);
+            File signedFilesDir = new File(ESDOutputFolder);
             while (count < tries) {
                 Collection<File> files = FileUtils.listFiles(signedFilesDir, new String[]{"txt"}, false);
 
