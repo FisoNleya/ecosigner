@@ -113,7 +113,7 @@ public class SigningService {
                     response.setInvoiceAMT(jsonObject.getString(JSON2Text.INVOICE_AMOUNT));
                     response.setSignature(jsonObject.getString(JSON2Text.SIGNATURE));
 
-                    if (!response.getSignature().contains(response.getInvoiceAMT())) {
+                    /*if (!response.getSignature().contains(response.getInvoiceAMT())) {
                         var report = ReportDto.builder()
                                 .user(user)
                                 .invoiceNumber(invoiceNumber)
@@ -124,7 +124,7 @@ public class SigningService {
                                 .build();
                         reportsService.logReportRecord(report);
                         return new ResponseEntity<>(INVALID_SIGNATURE, HttpStatus.EXPECTATION_FAILED);
-                    }
+                    }*/
 
                     status = SUCCESS_STATUS;
                     var report = ReportDto.builder()
