@@ -164,6 +164,7 @@ public class SigningService {
                 .build();
         reportsService.logReportRecord(report);
         messageResponse.setMessage(FAILED_CHECK_ESD);
+        log.error(FAILED_CHECK_ESD.concat(", ESD took too long to respond"));
         return new ResponseEntity<>(messageResponse, HttpStatus.EXPECTATION_FAILED);
     }
 
