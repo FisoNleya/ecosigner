@@ -73,6 +73,7 @@ public class SigningService {
         return new JSON2Text().convert(jsonObj);
     }
 
+
     public ResponseEntity<Object> signBill(Bill billRequest, AuthenticatedUserDto user) {
         String invoiceNumber = billRequest.getInvoiceNumber();
         MessageResponse messageResponse = new MessageResponse();
@@ -96,12 +97,16 @@ public class SigningService {
             File signedFilesDir = new File(ESDOutputFolder);
             while (count < tries) {
                 Collection<File> files = FileUtils.listFiles(signedFilesDir, new String[]{"txt"}, false);
+                log.info(String.format("Found: %d files", files.size()));
 
-                File invoiceFile = files.parallelStream().filter(file -> invoiceNumber.equals(FilenameUtils.getBaseName(file.getAbsolutePath())))
+                log.info(String.format("Searching for file: %s", invoiceNumber));
+                File invoiceFile = files.parallelStream().filter(file -> file.getAbsolutePath().contains(invoiceNumber))
                         .findAny()
                         .orElse(null);
 
                 if (invoiceFile != null) {
+                    log.info(String.format("File found: %s", invoiceFile.getAbsolutePath()));
+
                     //Read file to json and respond
                     List<String> signedInvoiceData = fileManager.readTextFile(invoiceFile, false);
 
@@ -138,7 +143,10 @@ public class SigningService {
                                     .build();
                     reportsService.logReportRecord(report);
                     return new ResponseEntity<>(response, HttpStatus.OK);
+                }else {
+                    log.warn(String.format("File not found: retrying %d more times", tries-1));
                 }
+
                 //wait a bit before checking for signed file again
                 Thread.sleep(1000);
                 count++;
@@ -146,11 +154,11 @@ public class SigningService {
 
 
         } catch (JsonProcessingException e) {
-            log.error(e.getMessage());
+            log.error("Json Processing Error", e);
         } catch (IOException e) {
-            log.error(e.getMessage().concat(""));
+            log.error("IO Error", e);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Failed to process file", e);
         }
 
 
